@@ -59,7 +59,7 @@ endfun suma
 defun sumatoria
     push {r4-r11,lr}
     // Insertar código a continuación
-
+    
     // Retorno, antes R1:R0 debe tener el valor correcto
     pop {r4-r11,pc}
 endfun sumatoria
@@ -105,7 +105,23 @@ endfun posicion_maximo
 defun ordenar_en_sitio_menor_a_mayor
     push {r4-r11,lr}
     // Insertar código a continuación
-
+    SUB R5,R0,#1 // R5 = k = n-1 (Variable local)
+MOV R4,R1 // R4 = R1 = b (Variable local)
+0:
+CMP R5,#0 // Comparo k con 0
+BLE 1f // Si k<=0, salto a la etiqueta 1
+ADD R0,R5,#1 // R0 = k+1, cargo el valor necesario antes del salto
+MOV R1,R4 // R1 = b, cargo el valor necesario antes del salto
+BL posicion_maximo //Llamo a posicion_maximo (Ahora R0 = j)
+/*Como R1 no almacena ningun resultado, puede usarse para almacenar
+variables temporales*/
+LDR R1,[R4,R5,LSL #2] // Cargo en R1 (x) el valor en la posicion "R4+R5*4" (b[k])
+LDR R6,[R4,R0,LSL #2] // Cargo en R6 el valor en la posición "R4+R0*4" (b[j])
+STR R6,[R4,R5,LSL #2] // Guardo b[j] en la posición "R4+R5*4" (b[k])
+STR R1,[R4,R0,LSL #2] // Guardo R1 (x) en la posición "R4+R0*4" (b[j])
+SUB R5,#1 // k = k-1
+B 0b // Salto a la etiqueta 0
+1:
     // Retorno
     pop {r4-r11,pc}
 endfun ordenar_en_sitio_menor_a_mayor
