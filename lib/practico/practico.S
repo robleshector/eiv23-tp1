@@ -80,7 +80,9 @@ endfun sumatoria
 defun posicion_maximo
     push {r4-r11,lr}
     // Insertar código a continuación
-
+    ADD
+    add
+    add
     // Retorno, antes R0 debe tener el valor correcto
     pop {r4-r11,pc}
 endfun posicion_maximo
