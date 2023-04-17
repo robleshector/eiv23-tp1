@@ -150,24 +150,28 @@ endfun posicion_maximo
 defun ordenar_en_sitio_menor_a_mayor
     push {r4-r11,lr}
     // Insertar código a continuación
-    sub r1,#1
-mov r2,r1
-    0:
-        cmp r2,#0
-        bls 1f
+  sub r5,r0,#1
+  mov r4,r1 
+ 
+0:
+    cmp r5,#0
+    ble 1f
 
-ldr r3,[r0,r1,lsl#2]
-mov r4,r3
+    add r0,r5,#1
+    mov r1, r4 
+    
+    BL posicion_maximo
 
-ldr r5,[r1,r2,lsl#2]
+    ldr r1,[r4,r5,lsl#2]
 
-ldr r6,[r1,r4,lsl#2]
-mov r5,r6
+    ldr r6,[r4,r0,lsl#2]
 
-mov r6,r5
+    str r6,[r4,r5,lsl#2]
 
-sub r2,#1
-B 0b
+    str r1,[r4,r0,lsl#2]
+    sub r5,#1
+
+    B 0b                
 
 1:
     // Retorno
