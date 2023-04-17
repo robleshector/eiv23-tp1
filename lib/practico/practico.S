@@ -59,7 +59,29 @@ endfun suma
 defun sumatoria
     push {r4-r11,lr}
     // Insertar código a continuación
-    
+    mov r3,#0   //cargamos cero de A
+    mov r2,#0   //cargamos cero de A
+
+    mov r4,#0   //cargamos cero de i
+
+    0:  // etiqueta
+        cmp r4, R0  // banderas <- r4 -r0     (compara r4 y r0).  
+        bge 1f  // si r4 mayor igual que r0, salta a la etiqueta 1
+        
+    ldr r5,[r1,r4,lsl#2] //cargamos r5 con r1+r4*(2 a la n) = r4*4        
+    asr r6, r5,#31  // entension con signo a 64 bits de (ext de r5 y se guarda en r6)
+
+    adds r2,r5   // r2 <- r2+r5  afecta la bandera 
+    adc r3,r6  // r3 <- r3+r6  suma con acarreo
+
+    add r4,#1   //r4 + 1
+
+    B 0b  //salto a la etiqueta 0
+
+    1:   //etiqueta 
+        mov r1,r3
+        mov r0,r2
+
     // Retorno, antes R1:R0 debe tener el valor correcto
     pop {r4-r11,pc}
 endfun sumatoria
@@ -80,9 +102,30 @@ endfun sumatoria
 defun posicion_maximo
     push {r4-r11,lr}
     // Insertar código a continuación
-    ADD
-    add
-    add
+    mov r2,#0
+
+    cmp r0,#1
+    bls 0f
+
+    ldr r4,[r1,r2,lsl#2]
+
+    mov r3,#1
+
+    1:
+        cmp r3,r0
+        bge 0f
+    ldr r5,[r1,r3,lsl#2]
+    cmp r4,r5
+    bge 2f
+
+mov r4,r5
+mov r2,r3
+
+    2:
+        add r3,#1
+        B 1b
+0:
+    mov r0,r2
     // Retorno, antes R0 debe tener el valor correcto
     pop {r4-r11,pc}
 endfun posicion_maximo
@@ -107,22 +150,25 @@ endfun posicion_maximo
 defun ordenar_en_sitio_menor_a_mayor
     push {r4-r11,lr}
     // Insertar código a continuación
-    SUB R5,R0,#1 // R5 = k = n-1 (Variable local)
-MOV R4,R1 // R4 = R1 = b (Variable local)
-0:
-CMP R5,#0 // Comparo k con 0
-BLE 1f // Si k<=0, salto a la etiqueta 1
-ADD R0,R5,#1 // R0 = k+1, cargo el valor necesario antes del salto
-MOV R1,R4 // R1 = b, cargo el valor necesario antes del salto
-BL posicion_maximo //Llamo a posicion_maximo (Ahora R0 = j)
-/*Como R1 no almacena ningun resultado, puede usarse para almacenar
-variables temporales*/
-LDR R1,[R4,R5,LSL #2] // Cargo en R1 (x) el valor en la posicion "R4+R5*4" (b[k])
-LDR R6,[R4,R0,LSL #2] // Cargo en R6 el valor en la posición "R4+R0*4" (b[j])
-STR R6,[R4,R5,LSL #2] // Guardo b[j] en la posición "R4+R5*4" (b[k])
-STR R1,[R4,R0,LSL #2] // Guardo R1 (x) en la posición "R4+R0*4" (b[j])
-SUB R5,#1 // k = k-1
-B 0b // Salto a la etiqueta 0
+    sub r1,#1
+mov r2,r1
+    0:
+        cmp r2,#0
+        bls 1f
+
+ldr r3,[r0,r1,lsl#2]
+mov r4,r3
+
+ldr r5,[r1,r2,lsl#2]
+
+ldr r6,[r1,r4,lsl#2]
+mov r5,r6
+
+mov r6,r5
+
+sub r2,#1
+B 0b
+
 1:
     // Retorno
     pop {r4-r11,pc}
